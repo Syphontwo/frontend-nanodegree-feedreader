@@ -91,13 +91,26 @@ $(function() {
     });
 
     describe('New feed selection', function(){
+      // get the initial contents of the feed div
+      var initialFeedText = $('.feed').html();
 
-      /* TODO: Write a test that ensures when a new feed is loaded
+      beforeEach(function(done){
+        // load the last feed since the first one is loaded on init
+        loadFeed(loadFeed.length - 1, done);
+      });
+
+      /* ensures when a new feed is loaded
        * by the loadFeed function that the content actually changes.
-       * Remember, loadFeed() is asynchronous.
        */
-       xit('correctly changes conent', function(){
+       it('correctly changes content', function(done){
+         // check that the feed div now contains new information
+         expect($('.feed').html()).not.toBe(initialFeedText);
+         done();
+       });
 
+       // reset the page back to init loadFeed
+       afterEach(function(){
+         loadFeed(0, function(){});
        });
     });
 }());
