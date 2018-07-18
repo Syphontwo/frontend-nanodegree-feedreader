@@ -52,12 +52,13 @@ $(function() {
     });
 
     describe('The menu', function(){
+      let body = $('body')
 
       /* ensures the menu element is
        * hidden by default.
        */
        it('is hidden by default', function(){
-         expect($('body').hasClass('menu-hidden')).toBe(true);
+         expect(body.hasClass('menu-hidden')).toBe(true);
        });
 
        /* ensures the menu changes
@@ -68,10 +69,10 @@ $(function() {
        it('toggles visibility when clicked', function(){
 
          $('.menu-icon-link').click();
-         expect($('body').hasClass('menu-hidden')).toBe(false);
+         expect(body.hasClass('menu-hidden')).toBe(false);
 
          $('.menu-icon-link').click();
-         expect($('body').hasClass('menu-hidden')).toBe(true);
+         expect(body.hasClass('menu-hidden')).toBe(true);
        });
     });
 
@@ -92,11 +93,19 @@ $(function() {
 
     describe('New feed selection', function(){
       // get the initial contents of the feed div
-      var initialFeedText = $('.feed').html();
+      let initialFeedText, newFeedText;
 
       beforeEach(function(done){
-        // load the last feed since the first one is loaded on init
-        loadFeed(loadFeed.length - 1, done);
+        // load the first feed and store it's value
+        loadFeed(0, function(){
+          initialFeedText = $('.feed').html();
+          // then load the second feed and store the new value
+          loadFeed(1, function(){
+            newFeedText = $('.feed').html();
+            // done here
+            done();
+          })
+        });
       });
 
       /* ensures when a new feed is loaded
@@ -104,13 +113,13 @@ $(function() {
        */
        it('correctly changes content', function(done){
          // check that the feed div now contains new information
-         expect($('.feed').html()).not.toBe(initialFeedText);
+         expect(initialFeedText).not.toBe(newFeedText);
          done();
        });
 
-       // reset the page back to init loadFeed
-       afterEach(function(){
-         loadFeed(0, function(){});
+       // reset the page back to initial values loadFeed
+       afterEach(function(done){
+         loadFeed(0, () => done());
        });
     });
 }());
